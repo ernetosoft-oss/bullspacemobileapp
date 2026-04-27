@@ -1,0 +1,106 @@
+name: EAS Build - BullsPlace Mobile App
+
+on:
+  push:
+    branches: [ master, main ]
+    paths:
+      - 'src/**'
+      - 'assets/**'
+      - 'App.tsx'
+      - 'package.json'
+      - 'app.json'
+      - 'eas.json'
+  pull_request:
+    branches: [ master, main ]
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: 'Build profile'
+        required: true
+        default: 'preview'
+        type: choice
+        options:
+          - preview
+          - production
+          - development
+      platform:
+        description: 'Platform'
+        required: true
+        default: 'android'
+        type: choice
+        options:
+          - android
+          - ios
+          - all
+
+env:
+  NODE_VERSION: '18.x'
+
+jobs:
+  build:
+    name: Build Mobile App
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 🏗 Setup repository
+        uses: actions/checkout@v3
+
+      - name: 🏗 Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 🏗 Setup Expo and EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🚀 Build Android Preview (on push)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        run: |
+          eas build --platform android --profile preview --non-interactive --no-wait
+          echo "✅ Android Preview build submitted"
+          echo "📱 Check status at: https://expo.dev/accounts/ernetosoft/projects/backtest-mobile-app/builds"
+
+      - name: 🚀 Build with Manual Options
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          PROFILE=${{ github.event.inputs.profile }}
+          PLATFORM=${{ github.event.inputs.platform }}
+          
+          echo "Building with profile: $PROFILE, platform: $PLATFORM"
+          
+          eas build --platform $PLATFORM --profile $PROFILE --non-interactive --no-wait
+          
+          echo "✅ Build submitted successfully"
+          echo "📱 Monitor at: https://expo.dev/accounts/ernetosoft/projects/backtest-mobile-app/builds"
+
+      - name: 💬 Comment build status (on PR)
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '🚀 **EAS Build triggered!**\n\nCheck build status at: https://expo.dev/accounts/ernetosoft/projects/backtest-mobile-app/builds'
+            })
+
+      - name: 📊 Build Summary
+        if: always()
+        run: |
+          echo "## 📱 BullsPlace Mobile Build" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** Build job completed" >> $GITHUB_STEP_SUMMARY
+          echo "**App:** BullsPlace (backtest-mobile-app)" >> $GITHUB_STEP_SUMMARY
+          echo "**Version:** 1.1.0" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "🔗 [View Builds](https://expo.dev/accounts/ernetosoft/projects/backtest-mobile-app/builds)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "⏱️ Build will complete in 10-20 minutes on Expo servers" >> $GITHUB_STEP_SUMMARY
