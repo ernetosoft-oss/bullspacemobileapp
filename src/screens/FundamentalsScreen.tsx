@@ -5,11 +5,11 @@ import {
   ScrollView,
   StyleSheet,
   ActivityIndicator,
-  TextInput,
   TouchableOpacity,
   RefreshControl,
 } from 'react-native';
 import { TRADEMATE_API_URL } from '../config/api';
+import StockAutocomplete from '../components/StockAutocomplete';
 
 interface FundamentalsData {
   stock: string;
@@ -115,9 +115,11 @@ export default function FundamentalsScreen({ route, navigation }: any) {
     }
   };
 
-  const handleSearch = () => {
-    const sym = searchInput.trim().toUpperCase();
-    if (sym) fetchFundamentals(sym);
+  const handleSearch = (sym: string) => {
+    const symbol = sym.trim().toUpperCase();
+    if (symbol) {
+      fetchFundamentals(symbol);
+    }
   };
 
   const onRefresh = async () => {
@@ -139,21 +141,14 @@ export default function FundamentalsScreen({ route, navigation }: any) {
       keyboardShouldPersistTaps="handled"
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
     >
-      {/* Search Bar */}
+      {/* Search Bar with Autocomplete */}
       <View style={styles.searchBar}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Enter stock symbol..."
-          placeholderTextColor="#999"
+        <StockAutocomplete
           value={searchInput}
-          onChangeText={(t) => setSearchInput(t.toUpperCase())}
-          onSubmitEditing={handleSearch}
-          returnKeyType="search"
-          autoCapitalize="characters"
+          onChangeText={setSearchInput}
+          onSelect={handleSearch}
+          placeholder="Enter stock symbol..."
         />
-        <TouchableOpacity style={styles.searchBtn} onPress={handleSearch}>
-          <Text style={styles.searchBtnText}>Go</Text>
-        </TouchableOpacity>
       </View>
 
       {/* Loading */}

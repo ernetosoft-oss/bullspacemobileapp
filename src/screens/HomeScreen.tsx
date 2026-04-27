@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   StyleSheet,
   ScrollView,
@@ -10,6 +9,7 @@ import {
   Keyboard,
 } from 'react-native';
 import { useAuth } from '../context/AuthContext';
+import StockAutocomplete from '../components/StockAutocomplete';
 
 const POPULAR_STOCKS = [
   { symbol: 'RELIANCE', name: 'Reliance Industries' },
@@ -27,13 +27,16 @@ export default function HomeScreen({ navigation }: any) {
   const [isSearching, setIsSearching] = useState(false);
   const { isAuthenticated, user } = useAuth();
 
-  const handleSearch = () => {
-    const symbol = searchQuery.trim().toUpperCase();
-    if (!symbol) return;
+  const handleSearch = (symbol: string) => {
+    const sym = symbol.trim().toUpperCase();
+    if (!sym) return;
     setIsSearching(true);
     Keyboard.dismiss();
-    navigation.navigate('Fundamentals', { symbol });
-    setTimeout(() => setIsSearching(false), 500);
+    navigation.navigate('Fundamentals', { symbol: sym });
+    setTimeout(() => {
+      setIsSearching(false);
+      setSearchQuery('');
+    }, 500);
   };
 
   const handleQuickSearch = (symbol: string) => {
@@ -63,32 +66,14 @@ export default function HomeScreen({ navigation }: any) {
           >
             <Text style={styles.signInText}>Sign In / Sign Up</Text>
           </TouchableOpacity>
-        )}
-      </View>
-
-      {/* Search Box */}
+        )}with Autocomplete */}
       <View style={styles.searchSection}>
-        <View style={styles.searchBox}>
-          <Text style={styles.searchIcon}>🔍</Text>
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search stock symbol (e.g., RELIANCE)"
-            placeholderTextColor="#999"
-            value={searchQuery}
-            onChangeText={(t) => setSearchQuery(t.toUpperCase())}
-            onSubmitEditing={handleSearch}
-            returnKeyType="search"
-            autoCapitalize="characters"
-          />
-          <TouchableOpacity
-            style={[styles.searchBtn, !searchQuery.trim() && styles.searchBtnDisabled]}
-            onPress={handleSearch}
-            disabled={!searchQuery.trim() || isSearching}
-          >
-            {isSearching ? (
-              <ActivityIndicator size="small" color="#fff" />
-            ) : (
-              <Text style={styles.searchBtnText}>Search</Text>
+        <StockAutocomplete
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          onSelect={handleSearch}
+          placeholder="Search stock symbol (e.g., RELIANCE)"
+        /<Text style={styles.searchBtnText}>Search</Text>
             )}
           </TouchableOpacity>
         </View>

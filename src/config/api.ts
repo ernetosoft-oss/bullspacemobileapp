@@ -12,6 +12,7 @@ export const API_ENDPOINTS = {
   GET_FEEDS: `${API_BASE_URL}/api/feeds`,
   CHAT_STREAM: `${CHAT_API_URL}/api/LLM/streamchat`,
   FUNDAMENTALS: (symbol: string) => `${TRADEMATE_API_URL}/api/fundamentals/${symbol}`,
+  STOCKS_SEARCH: (query: string, limit: number = 10) => `${TRADEMATE_API_URL}/api/stocks/search?q=${encodeURIComponent(query)}&limit=${limit}`,
   AUTH_LOGIN: `${TRADEMATE_API_URL}/api/auth/login`,
   AUTH_REGISTER: `${TRADEMATE_API_URL}/api/auth/register`,
   AUTH_GOOGLE: `${TRADEMATE_API_URL}/api/auth/google`,
