@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "Backtest Mobile",
+    "name": "BullsPlace",
     "slug": "backtest-mobile-app",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -16,18 +16,28 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.earneto.backtest"
+      "bundleIdentifier": "com.earneto.backtest",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
+      "package": "com.earneto.backtest",
+      "versionCode": 1,
+      "permissions": [
+        "android.permission.INTERNET"
+      ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#2196F3"
       },
-      "package": "com.earneto.backtest",
-      "versionCode": 1
+      "jsEngine": "hermes"
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    }
+    "extra": {
+      "eas": {
+        "projectId": "35ae795c-63ef-432f-a8da-5f6f229a465e"
+      }
+    },
+    "owner": "ernetosoft"
   }
 }

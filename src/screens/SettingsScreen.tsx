@@ -160,7 +160,7 @@ export default function SettingsScreen() {
         <View style={styles.infoCard}>
           <Text style={styles.infoText}>Version: 1.0.0</Text>
           <Text style={styles.infoText}>
-            Backtest Mobile App - Trading Analysis Platform
+            BullsPlace - Stock Analysis Platform
           </Text>
         </View>
       </View>
