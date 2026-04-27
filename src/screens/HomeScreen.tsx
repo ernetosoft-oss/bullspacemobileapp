@@ -66,17 +66,17 @@ export default function HomeScreen({ navigation }: any) {
           >
             <Text style={styles.signInText}>Sign In / Sign Up</Text>
           </TouchableOpacity>
-        )}with Autocomplete */}
+        )}
+      </View>
+
+      {/* Search Box with Autocomplete */}
       <View style={styles.searchSection}>
         <StockAutocomplete
           value={searchQuery}
           onChangeText={setSearchQuery}
           onSelect={handleSearch}
           placeholder="Search stock symbol (e.g., RELIANCE)"
-        /<Text style={styles.searchBtnText}>Search</Text>
-            )}
-          </TouchableOpacity>
-        </View>
+        />
       </View>
 
       {/* Popular Stocks */}
